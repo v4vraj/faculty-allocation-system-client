@@ -1,29 +1,66 @@
 import React, { useState } from "react";
-import { TextField, Button, Typography, Box, Grid, Paper } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Grid2,
+  Paper,
+} from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
-    // Add your authentication logic here
+    setError(""); // Reset error message
+
+    try {
+      // Make API call to login
+      const response = await axios.post(
+        "/api/auth/login", // This should be the relative URL, ensure your backend is running on the correct port
+        { username: email, password: password },
+        { withCredentials: true } // Ensures cookie is sent with the request
+      );
+
+      // Assuming the response contains user role and login message
+      if (response.data.role === "Admin") {
+        navigate("/admin/dashboard"); // Redirect to Admin Dashboard
+      } else if (response.data.role === "Faculty") {
+        navigate("/faculty/dashboard"); // Redirect to Faculty Dashboard
+      }
+    } catch (err) {
+      setError("Invalid email or password."); // Show error if login fails
+    }
   };
 
   return (
-    <Grid
+    <Grid2
       container
       justifyContent="center"
       alignItems="center"
       minHeight="100vh"
     >
-      <Grid item xs={10} sm={6} md={4}>
+      <Grid2 item xs={10} sm={6} md={4}>
         <Paper elevation={3} sx={{ padding: 4, borderRadius: 2 }}>
           <Typography variant="h5" textAlign="center" gutterBottom>
             Login
           </Typography>
+          {error && (
+            <Typography
+              variant="body2"
+              color="error"
+              textAlign="center"
+              sx={{ marginBottom: 2 }}
+            >
+              {error}
+            </Typography>
+          )}
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -52,8 +89,8 @@ const Login = () => {
             </Button>
           </Box>
         </Paper>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 };
 
