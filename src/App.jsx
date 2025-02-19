@@ -1,4 +1,3 @@
-// src/App.js
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -24,45 +23,46 @@ const App = () => {
           element={
             <AuthProvider>
               <Routes>
-                {/* Dashboard Route */}
-                <Route
-                  path="/admin/dashboard"
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={["Admin"]}
-                      element={<DashboardLayoutBasic />}
-                    />
-                  }
-                />
-                <Route
-                  path="/admin/course-creation"
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={["Admin"]}
-                      element={<CourseCreation />}
-                    />
-                  }
-                />
-                <Route
-                  path="/admin/allocate-faculty"
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={["Admin"]}
-                      element={<FacultyAllocation />}
-                    />
-                  }
-                />
-
-                {/* Faculty Route */}
-                <Route
-                  path="/faculty/dashboard"
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={["Faculty"]}
-                      element={<FacultyDashboard />}
-                    />
-                  }
-                />
+                <Route path="/" element={<DashboardLayoutBasic />}>
+                  {/* Admin Routes */}
+                  <Route
+                    path="admin/dashboard"
+                    element={
+                      <ProtectedRoute
+                        allowedRoles={["Admin"]}
+                        element={<AdminDashboard />}
+                      />
+                    }
+                  />
+                  <Route
+                    path="admin/course-creation"
+                    element={
+                      <ProtectedRoute
+                        allowedRoles={["Admin"]}
+                        element={<CourseCreation />}
+                      />
+                    }
+                  />
+                  <Route
+                    path="admin/allocate-faculty"
+                    element={
+                      <ProtectedRoute
+                        allowedRoles={["Admin"]}
+                        element={<FacultyAllocation />}
+                      />
+                    }
+                  />
+                  {/* Faculty Routes */}
+                  <Route
+                    path="faculty/dashboard"
+                    element={
+                      <ProtectedRoute
+                        allowedRoles={["Faculty"]}
+                        element={<FacultyDashboard />}
+                      />
+                    }
+                  />
+                </Route>
               </Routes>
             </AuthProvider>
           }

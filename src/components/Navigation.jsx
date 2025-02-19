@@ -20,7 +20,7 @@ const NAVIGATION = {
       roles: ["Admin"],
     },
     {
-      segment: "faculty-allocation",
+      segment: "allocate-faculty",
       title: "Faculty Allocation",
       icon: <DescriptionIcon />,
       route: "/admin/allocate-faculty",

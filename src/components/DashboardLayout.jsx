@@ -6,8 +6,7 @@ import { PageContainer } from "@toolpad/core/PageContainer";
 import NAVIGATION from "./Navigation"; // Default import
 import useDemoRouter from "./useDemoRouter";
 import { extendTheme } from "@mui/material/styles";
-import AdminDashboard from "../pages/AdminDashboard";
-import FacultyDashboard from "../pages/FacultyDashboard";
+import { Outlet } from "react-router-dom"; // This allows dynamic content rendering
 
 // Theme setup (unchanged)
 const demoTheme = extendTheme({
@@ -39,14 +38,19 @@ const DashboardLayoutBasic = ({ window }) => {
 
   return (
     <AppProvider
-      navigation={navigation} // Pass role-based navigation
+      navigation={navigation}
+      branding={{
+        title: "Faculty-Course Allocation",
+        homeUrl: "/",
+      }}
       router={router}
       theme={demoTheme}
       window={demoWindow}
     >
       <ToolpadDashboardLayout>
         <PageContainer>
-          {user.role === "Admin" ? <AdminDashboard /> : <FacultyDashboard />}
+          {/* This will render the child routes dynamically */}
+          <Outlet />
         </PageContainer>
       </ToolpadDashboardLayout>
     </AppProvider>
