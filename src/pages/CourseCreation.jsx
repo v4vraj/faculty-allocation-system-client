@@ -16,8 +16,12 @@ import {
   TableBody,
   Typography,
   CardContent,
+  Box,
 } from "@mui/material";
 import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CustomModal from "../components/CustomModal";
 
 const CourseCreation = () => {
   const [courseName, setCourseName] = useState("");
@@ -30,17 +34,20 @@ const CourseCreation = () => {
   const [selectedProgram, setSelectedProgram] = useState("");
   const [totalTerms, setTotalTerms] = useState(0);
   const [selectedTerm, setSelectedTerm] = useState("");
+  const [openEditCourseModal, setOpenEditCourseModal] = useState(false);
+  const [openDeleteCourseModal, setOpenDeleteCourseModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [courseToDelete, setCourseToDelete] = useState(null);
 
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get("/api/courses/getAllCourses");
+      setCourseList(response.data);
+    } catch (err) {
+      console.error("Error fetching courses:", err);
+    }
+  };
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get("/api/courses/getAllCourses");
-        setCourseList(response.data);
-      } catch (err) {
-        console.error("Error fetching courses:", err);
-      }
-    };
-
     const fetchPrograms = async () => {
       try {
         const res = await axios.get("/api/programs/getAllPrograms");
@@ -87,6 +94,50 @@ const CourseCreation = () => {
       setError("Failed to create course. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCourseEdit = (courseData) => {
+    setSelectedCourse(courseData);
+    const program = programList.find(
+      (p) => p.program_id === courseData.program_id
+    );
+    setTotalTerms(program ? program.total_terms : 0);
+    setOpenEditCourseModal(true);
+  };
+
+  const handleCourseUpdate = async () => {
+    try {
+      await axios.put(
+        `/api/courses/updateCourseById/${selectedCourse.id}`,
+        selectedCourse
+      );
+      setOpenEditCourseModal(false);
+      fetchCourses();
+    } catch (error) {
+      console.error("Error updating course:", error);
+    }
+  };
+
+  const handleCourseDelete = (courseData) => {
+    setCourseToDelete(courseData);
+    setOpenDeleteCourseModal(true);
+  };
+
+  const confirmDeleteCourse = async () => {
+    try {
+      await axios.delete(`/api/courses/deleteCourseById/${courseToDelete.id}`);
+      setOpenDeleteCourseModal(false);
+      fetchCourses();
+    } catch (error) {
+      if (error.code === "ERR_BAD_RESPONSE") {
+        setError(
+          "This course cannot be deleted because it is associated with one or more allocations."
+        );
+      } else {
+        setError("Failed to delete the course. Please try again.");
+      }
+      console.error("Error deleting course:", error);
     }
   };
 
@@ -215,6 +266,7 @@ const CourseCreation = () => {
                   <TableCell>Course Hours</TableCell>
                   <TableCell>Program Name</TableCell>
                   <TableCell>Term Number</TableCell>
+                  <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -225,6 +277,10 @@ const CourseCreation = () => {
                     <TableCell>{course.course_hours}</TableCell>
                     <TableCell>{course.program_name}</TableCell>
                     <TableCell>{course.term_number}</TableCell>
+                    <TableCell>
+                      <EditIcon onClick={() => handleCourseEdit(course)} />
+                      <DeleteIcon onClick={() => handleCourseDelete(course)} />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -232,6 +288,118 @@ const CourseCreation = () => {
           </CardContent>
         </Card>
       </Grid2>
+      <CustomModal
+        open={openEditCourseModal}
+        onClose={() => setOpenEditCourseModal(false)}
+        title="Edit Course"
+        onConfirm={handleCourseUpdate}
+        confirmText="Update"
+      >
+        {selectedCourse && (
+          <Box display="flex" flexDirection="column" gap={2}>
+            <TextField
+              fullWidth
+              label="Course Name"
+              name="course_name"
+              value={selectedCourse.course_name || ""}
+              onChange={(e) =>
+                setSelectedCourse({
+                  ...selectedCourse,
+                  course_name: e.target.value,
+                })
+              }
+            />
+            <TextField
+              fullWidth
+              label="Course Code"
+              name="course_code"
+              value={selectedCourse.course_code || ""}
+              onChange={(e) =>
+                setSelectedCourse({
+                  ...selectedCourse,
+                  course_code: e.target.value,
+                })
+              }
+            />
+            <TextField
+              fullWidth
+              label="Course Hours"
+              name="course_hours"
+              value={selectedCourse.course_hours || ""}
+              onChange={(e) =>
+                setSelectedCourse({
+                  ...selectedCourse,
+                  course_hours: e.target.value,
+                })
+              }
+            />
+            <FormControl fullWidth>
+              <InputLabel>Select Program</InputLabel>
+              <Select
+                value={selectedCourse.program_id || ""}
+                onChange={(e) => {
+                  const program = programList.find(
+                    (p) => p.program_id === e.target.value
+                  );
+                  setTotalTerms(program ? program.total_terms : 0);
+                  setSelectedCourse({
+                    ...selectedCourse,
+                    program_id: e.target.value,
+                  });
+                }}
+              >
+                {programList.map((program) => (
+                  <MenuItem key={program.program_id} value={program.program_id}>
+                    {program.program_code}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel>Select Term</InputLabel>
+              <Select
+                value={selectedCourse.term || ""}
+                onChange={(e) =>
+                  setSelectedCourse({
+                    ...selectedCourse,
+                    term: e.target.value,
+                  })
+                }
+                disabled={!totalTerms}
+              >
+                {[...Array(totalTerms)].map((_, index) => (
+                  <MenuItem key={index + 1} value={index + 1}>
+                    {index + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+        )}
+      </CustomModal>
+
+      {/* Delete Course Modal */}
+      <CustomModal
+        open={openDeleteCourseModal}
+        onClose={() => {
+          setOpenDeleteCourseModal(false);
+          setError(""); // Reset error state
+        }}
+        title="Confirm Deletion"
+        onConfirm={confirmDeleteCourse}
+        confirmText="Delete"
+        cancelText="Cancel"
+      >
+        <Typography>
+          Are you sure you want to delete the course{" "}
+          {courseToDelete?.course_name}?
+        </Typography>
+        {error && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            {error}
+          </Typography>
+        )}
+      </CustomModal>
     </Grid2>
   );
 };
