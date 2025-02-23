@@ -39,7 +39,7 @@ const BulkUpload = ({ type, demoFile }) => {
   const [columns, setColumns] = React.useState([]);
   const [uploadError, setUploadError] = React.useState(null);
   const [uploadSuccess, setUploadSuccess] = React.useState(null);
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const handleFileUpload = (event) => {
     const selectedFile = event.target.files[0];
     if (!selectedFile) return;
@@ -77,13 +77,9 @@ const BulkUpload = ({ type, demoFile }) => {
     formData.append("type", type);
 
     try {
-      const response = await axios.post(
-        "${API_BASE_URL}/api/bulkUpload/upload",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await axios.post("/api/bulkUpload/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       setUploadSuccess(response.data.message);
       setUploadError(null);

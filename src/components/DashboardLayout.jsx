@@ -31,7 +31,7 @@ const DashboardLayoutBasic = ({ window }) => {
   const { user, login, logout, loading } = useContext(AuthContext);
   const [session, setSession] = useState(null);
   const [userDetails, setUserDetails] = useState(null); // 🔹 Default to null
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const router = useDemoRouter("/dashboard");
   const demoWindow = window ? window() : undefined;
 
@@ -40,9 +40,7 @@ const DashboardLayoutBasic = ({ window }) => {
       if (!user?.id) return; // ✅ Ensure user ID is available before making request
 
       try {
-        const res = await axios.get(
-          `${API_BASE_URL}/api/users/getUserById/${user.id}`
-        );
+        const res = await axios.get(`/api/users/getUserById/${user.id}`);
         const userData =
           Array.isArray(res.data) && res.data.length > 0 ? res.data[0] : {};
         setUserDetails(userData);

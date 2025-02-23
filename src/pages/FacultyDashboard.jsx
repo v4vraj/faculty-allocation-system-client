@@ -22,12 +22,11 @@ const FacultyDashboard = () => {
   const { user } = useContext(AuthContext);
   const [allocations, setAllocations] = useState([]);
   const [facultyDetails, setFacultyDetails] = useState({});
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   useEffect(() => {
     const fetchAllocations = async () => {
       try {
         const res = await axios.get(
-          `${API_BASE_URL}/api/users/getAllocationByFaculty/${user.id}`
+          `/api/users/getAllocationByFaculty/${user.id}`
         );
         setAllocations(res.data);
       } catch (error) {
@@ -37,7 +36,7 @@ const FacultyDashboard = () => {
     const facultyDetails = async () => {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/api/users/getFacultyById/${user.id}`
+          `/api/users/getFacultyById/${user.id}`
         );
         console.log(response.data[0].hours_completed);
         setFacultyDetails(response.data);

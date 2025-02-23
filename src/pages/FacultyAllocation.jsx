@@ -30,11 +30,11 @@ const FacultyAllocation = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [allocationList, setAllocationList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   useEffect(() => {
     const fetchYears = async () => {
       try {
-        const res = await axios.get("${API_BASE_URL}/api/programs/getAllYears");
+        const res = await axios.get("/api/programs/getAllYears");
         setYearList(res.data);
       } catch (error) {
         console.error("Error fetching years:", error);
@@ -42,9 +42,7 @@ const FacultyAllocation = () => {
     };
     const fetchAllAllocation = async () => {
       try {
-        const response = await axios.get(
-          "${API_BASE_URL}/api/users/getAllAllocation"
-        );
+        const response = await axios.get("/api/users/getAllAllocation");
         console.log(response.data);
 
         setAllocationList(response.data);
@@ -63,9 +61,7 @@ const FacultyAllocation = () => {
     setSelectedFaculty("");
     setSelectedCourse("");
     try {
-      const res = await axios.get(
-        `${API_BASE_URL}/api/programs/getProgramsByYear/${year}`
-      );
+      const res = await axios.get(`/api/programs/getProgramsByYear/${year}`);
       setProgramList(res.data);
     } catch (error) {
       console.error("Error fetching programs:", error);
@@ -78,13 +74,9 @@ const FacultyAllocation = () => {
     setSelectedFaculty("");
     setSelectedCourse("");
     try {
-      const facultyRes = await axios.get(
-        "${API_BASE_URL}/api/users/getAllFaculty"
-      );
+      const facultyRes = await axios.get("/api/users/getAllFaculty");
       setFacultyList(facultyRes.data);
-      const courseRes = await axios.get(
-        `${API_BASE_URL}/api/courses/getNonAllocatedCourses`
-      );
+      const courseRes = await axios.get(`/api/courses/getNonAllocatedCourses`);
       setCourseList(courseRes.data);
     } catch (error) {
       console.error("Error fetching faculty and courses:", error);
@@ -95,7 +87,7 @@ const FacultyAllocation = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("${API_BASE_URL}/api/users/allocateFaculty", {
+      await axios.post("/api/users/allocateFaculty", {
         year: selectedYear,
         program_id: selectedProgram,
         faculty_id: selectedFaculty,
