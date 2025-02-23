@@ -26,6 +26,13 @@ const NAVIGATION = {
       route: "/admin/allocate-faculty",
       roles: ["Admin"],
     },
+    {
+      segment: "bulk-uploads",
+      title: "Bulk Uploads",
+      icon: <DescriptionIcon />,
+      route: "/admin/bulk-uploads",
+      roles: ["Admin"],
+    },
   ],
   faculty: [
     {

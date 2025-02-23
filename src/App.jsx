@@ -8,6 +8,7 @@ import FacultyDashboard from "./pages/FacultyDashboard";
 import DashboardLayoutBasic from "./components/DashboardLayout";
 import CourseCreation from "./pages/CourseCreation";
 import FacultyAllocation from "./pages/FacultyAllocation";
+import BulkUpload from "./pages/BulkUpload";
 
 const App = () => {
   return (
@@ -49,6 +50,15 @@ const App = () => {
                       <ProtectedRoute
                         allowedRoles={["Admin"]}
                         element={<FacultyAllocation />}
+                      />
+                    }
+                  />
+                  <Route
+                    path="admin/bulk-uploads"
+                    element={
+                      <ProtectedRoute
+                        allowedRoles={["Admin"]}
+                        element={<BulkUpload />}
                       />
                     }
                   />
