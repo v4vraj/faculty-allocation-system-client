@@ -18,9 +18,12 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("/api/auth/session", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/auth/session`,
+          {
+            withCredentials: true,
+          }
+        );
         setUser(res.data.user);
         setIsAuthenticated(true);
       } catch (error) {
@@ -41,9 +44,13 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (credentials) => {
     try {
-      const res = await axios.post("/api/auth/login", credentials, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
+        credentials,
+        {
+          withCredentials: true,
+        }
+      );
       setUser(res.data.user);
       setIsAuthenticated(true);
       navigate("/dashboard"); // Redirect after login
@@ -56,7 +63,11 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-      await axios.post("/api/auth/logout", {}, { withCredentials: true });
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
       setUser(null);
       setIsAuthenticated(false);
       navigate("/login"); // Redirect to login after logout

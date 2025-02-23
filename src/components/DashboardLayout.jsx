@@ -40,7 +40,9 @@ const DashboardLayoutBasic = ({ window }) => {
       if (!user?.id) return; // ✅ Ensure user ID is available before making request
 
       try {
-        const res = await axios.get(`/api/users/getUserById/${user.id}`);
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/users/getUserById/${user.id}`
+        );
         const userData =
           Array.isArray(res.data) && res.data.length > 0 ? res.data[0] : {};
         setUserDetails(userData);

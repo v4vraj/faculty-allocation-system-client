@@ -37,7 +37,9 @@ const AdminDashboard = () => {
   const fetchFaculty = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/api/users/getAllFaculty");
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/getAllFaculty`
+      );
       setFaculty(res.data);
 
       const roleData = { Faculty: 0 };
@@ -59,7 +61,9 @@ const AdminDashboard = () => {
   const fetchPrograms = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/api/programs/getAllPrograms");
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/programs/getAllPrograms`
+      );
       setPrograms(res.data);
 
       const yearData = {};
@@ -96,7 +100,7 @@ const AdminDashboard = () => {
   const handleFacultyUpdate = async () => {
     try {
       await axios.put(
-        `/api/users/updateFacultyById/${selectedFaculty.id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/updateFacultyById/${selectedFaculty.id}`,
         selectedFaculty
       );
       setOpenEditFacultyModal(false);
@@ -113,7 +117,9 @@ const AdminDashboard = () => {
 
   const confirmDeleteFaculty = async () => {
     try {
-      await axios.delete(`/api/users/deleteFacultyById/${facultyToDelete.id}`);
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/deleteFacultyById/${facultyToDelete.id}`
+      );
       setOpenDeleteFacultyModal(false);
       fetchFaculty();
     } catch (error) {
@@ -129,7 +135,7 @@ const AdminDashboard = () => {
   const handleProgramUpdate = async () => {
     try {
       await axios.put(
-        `/api/programs/updateProgramById/${selectedProgram.program_id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/programs/updateProgramById/${selectedProgram.program_id}`,
         selectedProgram
       );
       setOpenEditProgramModal(false);
@@ -147,7 +153,7 @@ const AdminDashboard = () => {
   const confirmDeleteProgram = async () => {
     try {
       await axios.delete(
-        `/api/programs/deleteProgramById/${programToDelete.program_id}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/programs/deleteProgramById/${programToDelete.program_id}`
       );
       setOpenDeleteProgramModal(false);
       fetchPrograms();

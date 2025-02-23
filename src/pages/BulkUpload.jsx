@@ -77,9 +77,13 @@ const BulkUpload = ({ type, demoFile }) => {
     formData.append("type", type);
 
     try {
-      const response = await axios.post("/api/bulkUpload/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/bulkUpload/upload`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       setUploadSuccess(response.data.message);
       setUploadError(null);

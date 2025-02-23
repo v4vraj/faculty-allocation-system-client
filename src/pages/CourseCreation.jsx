@@ -41,7 +41,9 @@ const CourseCreation = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get("/api/courses/getAllCourses");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/courses/getAllCourses`
+      );
       setCourseList(response.data);
     } catch (err) {
       console.error("Error fetching courses:", err);
@@ -50,7 +52,9 @@ const CourseCreation = () => {
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        const res = await axios.get("/api/programs/getAllPrograms");
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/programs/getAllPrograms`
+        );
         setProgramList(res.data);
       } catch (error) {
         console.error("Error fetching programs:", error);
@@ -75,20 +79,25 @@ const CourseCreation = () => {
     setLoading(true);
 
     try {
-      await axios.post("/api/courses/createCourse", {
-        course_name: courseName,
-        course_code: courseCode,
-        course_hours: courseHours,
-        term: selectedTerm,
-        program_id: selectedProgram,
-      });
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/courses/createCourse`,
+        {
+          course_name: courseName,
+          course_code: courseCode,
+          course_hours: courseHours,
+          term: selectedTerm,
+          program_id: selectedProgram,
+        }
+      );
       setCourseName("");
       setCourseCode("");
       setCourseHours("");
       setSelectedProgram("");
       setTotalTerms(0);
       setSelectedTerm("");
-      const response = await axios.get("/api/courses/getAllCourses");
+      const response = await axios.get(
+        `{import.meta.env.VITE_API_BASE_URL}/api/courses/getAllCourses`
+      );
       setCourseList(response.data);
     } catch (error) {
       setError("Failed to create course. Please try again.");
@@ -109,7 +118,7 @@ const CourseCreation = () => {
   const handleCourseUpdate = async () => {
     try {
       await axios.put(
-        `/api/courses/updateCourseById/${selectedCourse.id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/courses/updateCourseById/${selectedCourse.id}`,
         selectedCourse
       );
       setOpenEditCourseModal(false);
@@ -126,7 +135,9 @@ const CourseCreation = () => {
 
   const confirmDeleteCourse = async () => {
     try {
-      await axios.delete(`/api/courses/deleteCourseById/${courseToDelete.id}`);
+      await axios.delete(
+        `${import.meta.env.VITE_API_BASE_URL}/api/courses/deleteCourseById/${courseToDelete.id}`
+      );
       setOpenDeleteCourseModal(false);
       fetchCourses();
     } catch (error) {
