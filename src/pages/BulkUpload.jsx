@@ -184,9 +184,9 @@ const BulkUpload = ({ type, demoFile }) => {
 const UploadSection = () => {
   return (
     <Box sx={{ p: 4, display: "flex", flexDirection: "column", gap: 3 }}>
-      <BulkUpload type="Courses" demoFile="../../public/courseDemo.xls" />
-      <BulkUpload type="users" demoFile="../../public/facultyDemo.xlsx" />
-      <BulkUpload type="Programs" demoFile="../../public/programDemo.xlsx" />
+      <BulkUpload type="Courses" demoFile="../../courseDemo.xls" />
+      <BulkUpload type="users" demoFile="../../facultyDemo.xlsx" />
+      <BulkUpload type="Programs" demoFile="../../programDemo.xlsx" />
     </Box>
   );
 };
