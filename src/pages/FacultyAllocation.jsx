@@ -75,10 +75,8 @@ const FacultyAllocation = () => {
     setSelectedCourse("");
     try {
       const facultyRes = await axios.get("/api/users/getAllFaculty");
-      console.log(facultyRes.data);
-
       setFacultyList(facultyRes.data);
-      const courseRes = await axios.get(`/api/courses/getAllCourses`);
+      const courseRes = await axios.get(`/api/courses/getNonAllocatedCourses`);
       setCourseList(courseRes.data);
     } catch (error) {
       console.error("Error fetching faculty and courses:", error);
