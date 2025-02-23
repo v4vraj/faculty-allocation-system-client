@@ -37,12 +37,41 @@ export const AuthProvider = ({ children }) => {
     }
   }, [navigate, authCheckDone]); // Add authCheckDone as a dependency
 
+  // Login function
+  const login = async (credentials) => {
+    try {
+      const res = await axios.post("/api/auth/login", credentials, {
+        withCredentials: true,
+      });
+      setUser(res.data.user);
+      setIsAuthenticated(true);
+      navigate("/dashboard"); // Redirect after login
+    } catch (error) {
+      console.error("Login failed", error);
+      setIsAuthenticated(false);
+    }
+  };
+
+  // Logout function
+  const logout = async () => {
+    try {
+      await axios.post("/api/auth/logout", {}, { withCredentials: true });
+      setUser(null);
+      setIsAuthenticated(false);
+      navigate("/login"); // Redirect to login after logout
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
         user,
         loading,
+        login, // Provide login function
+        logout, // Provide logout function
       }}
     >
       {loading ? <div>Loading...</div> : children}{" "}
