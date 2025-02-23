@@ -76,8 +76,6 @@ const DashboardLayoutBasic = ({ window }) => {
   const navigation =
     userDetails?.role === "Admin" ? NAVIGATION.admin : NAVIGATION.faculty;
 
-  if (loading || !userDetails) return <div>Loading...</div>; // ✅ Ensure data is ready before rendering
-
   return (
     <AppProvider
       navigation={navigation}

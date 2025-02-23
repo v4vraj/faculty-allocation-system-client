@@ -7,7 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:3000", // Replace with your backend URL
+        // target: "http://localhost:3000", // Replace with your backend URL
+        target: "https://faculty-allocation-system-server.onrender.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },

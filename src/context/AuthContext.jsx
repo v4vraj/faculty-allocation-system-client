@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 export const AuthContext = createContext();
 
@@ -70,11 +71,17 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         user,
         loading,
-        login, // Provide login function
-        logout, // Provide logout function
+        login,
+        logout,
       }}
     >
-      {loading ? <div>Loading...</div> : children}{" "}
+      {loading ? (
+        <div>
+          <Loader message="Loading..." />
+        </div>
+      ) : (
+        children
+      )}{" "}
       {/* Show loading during auth check */}
     </AuthContext.Provider>
   );

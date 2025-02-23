@@ -156,7 +156,7 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loading) return <Typography>Loading...</Typography>;
+  // if (loading) return <Typography>Loading...</Typography>;
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (

@@ -181,7 +181,7 @@ const UploadSection = () => {
   return (
     <Box sx={{ p: 4, display: "flex", flexDirection: "column", gap: 3 }}>
       <BulkUpload type="Courses" demoFile="/assets/courseDemo.xlsx" />
-      <BulkUpload type="users1" demoFile="/assets/facultyDemo.xlsx" />
+      <BulkUpload type="users" demoFile="/assets/facultyDemo.xlsx" />
       <BulkUpload type="Programs" demoFile="/assets/programDemo.xlsx" />
     </Box>
   );
