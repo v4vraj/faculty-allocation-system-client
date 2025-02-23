@@ -17,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import CustomModal from "../components/CustomModal";
+import InfoModal from "../components/InfoModal";
 
 const AdminDashboard = () => {
   const [faculty, setFaculty] = useState([]);
@@ -354,19 +355,16 @@ const AdminDashboard = () => {
       </CustomModal>
 
       {/* Delete Faculty Modal */}
-      <CustomModal
+      <InfoModal
         open={openDeleteFacultyModal}
         onClose={() => setOpenDeleteFacultyModal(false)}
         title="Confirm Deletion"
         onConfirm={confirmDeleteFaculty}
+        message={` Are you sure you want to delete faculty member
+          ${facultyToDelete?.first_name} ${facultyToDelete?.last_name}?`}
         confirmText="Delete"
         cancelText="Cancel"
-      >
-        <Typography>
-          Are you sure you want to delete faculty member{" "}
-          {facultyToDelete?.first_name} {facultyToDelete?.last_name}?
-        </Typography>
-      </CustomModal>
+      ></InfoModal>
 
       {/* Edit Program Modal */}
       <CustomModal
@@ -455,19 +453,18 @@ const AdminDashboard = () => {
       </CustomModal>
 
       {/* Delete Program Modal */}
-      <CustomModal
+      <InfoModal
         open={openDeleteProgramModal}
         onClose={() => setOpenDeleteProgramModal(false)}
         title="Confirm Deletion"
         onConfirm={confirmDeleteProgram}
         confirmText="Delete"
         cancelText="Cancel"
+        message={`Are you sure you want to delete program
+          ${programToDelete?.program_name}?`}
       >
-        <Typography>
-          Are you sure you want to delete program{" "}
-          {programToDelete?.program_name}?
-        </Typography>
-      </CustomModal>
+        <Typography></Typography>
+      </InfoModal>
     </>
   );
 };

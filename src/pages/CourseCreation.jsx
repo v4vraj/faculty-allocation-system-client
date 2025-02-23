@@ -22,7 +22,7 @@ import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomModal from "../components/CustomModal";
-
+import InfoModal from "../components/InfoModal";
 const CourseCreation = () => {
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
@@ -38,6 +38,7 @@ const CourseCreation = () => {
   const [openDeleteCourseModal, setOpenDeleteCourseModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courseToDelete, setCourseToDelete] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
 
   const fetchCourses = async () => {
     try {
@@ -142,11 +143,11 @@ const CourseCreation = () => {
       fetchCourses();
     } catch (error) {
       if (error.code === "ERR_BAD_RESPONSE") {
-        setError(
+        setDeleteError(
           "This course cannot be deleted because it is associated with one or more allocations."
         );
       } else {
-        setError("Failed to delete the course. Please try again.");
+        setDeleteError("Failed to delete the course. Please try again.");
       }
       console.error("Error deleting course:", error);
     }
@@ -390,7 +391,7 @@ const CourseCreation = () => {
       </CustomModal>
 
       {/* Delete Course Modal */}
-      <CustomModal
+      <InfoModal
         open={openDeleteCourseModal}
         onClose={() => {
           setOpenDeleteCourseModal(false);
@@ -400,17 +401,10 @@ const CourseCreation = () => {
         onConfirm={confirmDeleteCourse}
         confirmText="Delete"
         cancelText="Cancel"
-      >
-        <Typography>
-          Are you sure you want to delete the course{" "}
-          {courseToDelete?.course_name}?
-        </Typography>
-        {error && (
-          <Typography color="error" sx={{ mt: 2 }}>
-            {error}
-          </Typography>
-        )}
-      </CustomModal>
+        message={` Are you sure you want to delete the course{" "}
+          ${courseToDelete?.course_name}?`}
+        error={deleteError}
+      ></InfoModal>
     </Grid2>
   );
 };

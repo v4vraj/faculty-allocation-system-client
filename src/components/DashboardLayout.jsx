@@ -78,12 +78,14 @@ const DashboardLayoutBasic = ({ window }) => {
   const navigation =
     userDetails?.role === "Admin" ? NAVIGATION.admin : NAVIGATION.faculty;
 
+  const homeUrl = userDetails?.role === "Admin" ? "/dashboard" : "/dashboard";
+
   return (
     <AppProvider
       navigation={navigation}
       branding={{
-        title: "Faculty-Course Allocation",
-        homeUrl: "/",
+        title: "Faculty Course Allocation",
+        homeUrl: homeUrl,
       }}
       router={router}
       theme={demoTheme}
