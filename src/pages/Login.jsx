@@ -15,6 +15,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +24,7 @@ const Login = () => {
     try {
       // Make API call to login
       const response = await axios.post(
-        "/api/auth/login", // This should be the relative URL, ensure your backend is running on the correct port
+        `${API_BASE_URL}${API_BASE_URL}/api/auth/login`, // This should be the relative URL, ensure your backend is running on the correct port
         { username: email, password: password },
         { withCredentials: true } // Ensures cookie is sent with the request
       );

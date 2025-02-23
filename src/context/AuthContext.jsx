@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); // Keeps track of loading state
   const navigate = useNavigate();
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // Flag to track if auth check has been performed
   const [authCheckDone, setAuthCheckDone] = useState(false);
 
@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await axios.get("/api/auth/session", {
+        const res = await axios.get("${API_BASE_URL}/api/auth/session", {
           withCredentials: true,
         });
         setUser(res.data.user);
@@ -41,9 +41,13 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (credentials) => {
     try {
-      const res = await axios.post("/api/auth/login", credentials, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "${API_BASE_URL}/api/auth/login",
+        credentials,
+        {
+          withCredentials: true,
+        }
+      );
       setUser(res.data.user);
       setIsAuthenticated(true);
       navigate("/dashboard"); // Redirect after login
@@ -56,7 +60,11 @@ export const AuthProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-      await axios.post("/api/auth/logout", {}, { withCredentials: true });
+      await axios.post(
+        "${API_BASE_URL}/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
       setUser(null);
       setIsAuthenticated(false);
       navigate("/login"); // Redirect to login after logout
