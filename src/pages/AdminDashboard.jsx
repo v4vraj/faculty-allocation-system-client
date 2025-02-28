@@ -34,6 +34,7 @@ const AdminDashboard = () => {
   const [programToDelete, setProgramToDelete] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
 
   const fetchFaculty = async () => {
     setLoading(true);
@@ -118,13 +119,19 @@ const AdminDashboard = () => {
 
   const confirmDeleteFaculty = async () => {
     try {
-      await axios.delete(
+      const res = await axios.delete(
         `${import.meta.env.VITE_API_BASE_URL}/api/users/deleteFacultyById/${facultyToDelete.id}`
       );
       setOpenDeleteFacultyModal(false);
       fetchFaculty();
     } catch (error) {
-      console.error("Error deleting faculty:", error);
+      if (error.code === "ERR_BAD_RESPONSE") {
+        setDeleteError(
+          "This Faculty cannot be deleted because it is associated with one or more allocations."
+        );
+      } else {
+        setDeleteError("Failed to delete the Faculty. Please try again.");
+      }
     }
   };
 
@@ -159,6 +166,13 @@ const AdminDashboard = () => {
       setOpenDeleteProgramModal(false);
       fetchPrograms();
     } catch (error) {
+      if (error.code === "ERR_BAD_RESPONSE") {
+        setDeleteError(
+          "This Program cannot be deleted because it is associated with one or more allocations."
+        );
+      } else {
+        setDeleteError("Failed to delete the Faculty. Please try again.");
+      }
       console.error("Error deleting program:", error);
     }
   };
@@ -364,6 +378,7 @@ const AdminDashboard = () => {
           ${facultyToDelete?.first_name} ${facultyToDelete?.last_name}?`}
         confirmText="Delete"
         cancelText="Cancel"
+        error={deleteError}
       ></InfoModal>
 
       {/* Edit Program Modal */}
@@ -462,6 +477,7 @@ const AdminDashboard = () => {
         cancelText="Cancel"
         message={`Are you sure you want to delete program
           ${programToDelete?.program_name}?`}
+        error={deleteError}
       >
         <Typography></Typography>
       </InfoModal>

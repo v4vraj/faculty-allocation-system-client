@@ -39,6 +39,8 @@ const CourseCreation = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courseToDelete, setCourseToDelete] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [openSuccessModal, setOpenSuccessModal] = useState(null);
 
   const fetchCourses = async () => {
     try {
@@ -50,18 +52,17 @@ const CourseCreation = () => {
       console.error("Error fetching courses:", err);
     }
   };
+  const fetchPrograms = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/programs/getAllPrograms`
+      );
+      setProgramList(res.data);
+    } catch (error) {
+      console.error("Error fetching programs:", error);
+    }
+  };
   useEffect(() => {
-    const fetchPrograms = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/programs/getAllPrograms`
-        );
-        setProgramList(res.data);
-      } catch (error) {
-        console.error("Error fetching programs:", error);
-      }
-    };
-
     fetchCourses();
     fetchPrograms();
   }, []);
@@ -80,16 +81,18 @@ const CourseCreation = () => {
     setLoading(true);
 
     try {
-      await axios.post(
+      const res = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/courses/createCourse`,
         {
           course_name: courseName,
           course_code: courseCode,
           course_hours: courseHours,
-          term: selectedTerm,
+          term_number: selectedTerm,
           program_id: selectedProgram,
         }
       );
+      setSuccessMsg(res.data.message);
+      setOpenSuccessModal(true);
       setCourseName("");
       setCourseCode("");
       setCourseHours("");
@@ -97,7 +100,7 @@ const CourseCreation = () => {
       setTotalTerms(0);
       setSelectedTerm("");
       const response = await axios.get(
-        `{import.meta.env.VITE_API_BASE_URL}/api/courses/getAllCourses`
+        `${import.meta.env.VITE_API_BASE_URL}/api/courses/getAllCourses`
       );
       setCourseList(response.data);
     } catch (error) {
@@ -118,10 +121,16 @@ const CourseCreation = () => {
 
   const handleCourseUpdate = async () => {
     try {
-      await axios.put(
+      //excuding program_name
+      const { program_name, created_at, ...updatedCourse } = selectedCourse;
+      console.log(updatedCourse);
+
+      const response = await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/courses/updateCourseById/${selectedCourse.id}`,
-        selectedCourse
+        updatedCourse
       );
+      setSuccessMsg(response.data.message);
+      setOpenSuccessModal(true);
       setOpenEditCourseModal(false);
       fetchCourses();
     } catch (error) {
@@ -370,11 +379,11 @@ const CourseCreation = () => {
             <FormControl fullWidth>
               <InputLabel>Select Term</InputLabel>
               <Select
-                value={selectedCourse.term || ""}
+                value={selectedCourse.term_number || ""}
                 onChange={(e) =>
                   setSelectedCourse({
                     ...selectedCourse,
-                    term: e.target.value,
+                    term_number: e.target.value,
                   })
                 }
                 disabled={!totalTerms}
@@ -395,16 +404,30 @@ const CourseCreation = () => {
         open={openDeleteCourseModal}
         onClose={() => {
           setOpenDeleteCourseModal(false);
-          setError(""); // Reset error state
+          setDeleteError(""); // Reset error state properly
         }}
         title="Confirm Deletion"
         onConfirm={confirmDeleteCourse}
         confirmText="Delete"
         cancelText="Cancel"
-        message={` Are you sure you want to delete the course{" "}
-          ${courseToDelete?.course_name}?`}
-        error={deleteError}
-      ></InfoModal>
+        message={`Are you sure you want to delete the course "${courseToDelete?.course_name}"?`}
+        type="error" // Indicates this is an error modal
+      />
+
+      {/* Success Modal */}
+      <InfoModal
+        open={openSuccessModal}
+        onClose={() => {
+          setOpenSuccessModal(false);
+          setSuccessMsg("");
+        }}
+        title="Success!"
+        onConfirm={() => {
+          setOpenSuccessModal(false);
+        }}
+        message={successMsg}
+        type="success" // Indicates this is a success modal
+      />
     </Grid2>
   );
 };

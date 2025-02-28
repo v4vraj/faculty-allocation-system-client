@@ -22,27 +22,34 @@ const InfoModal = ({
   onConfirm,
   confirmText = "Confirm",
   cancelText = "Cancel",
-  error = "", // New error prop
+  type = "info", // New type prop: "success" | "error"
 }) => {
+  const isSuccess = type === "success";
+  const isError = type === "error";
+
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={modalStyle}>
-        <Typography variant="h6" mb={2}>
+        <Typography
+          variant="h6"
+          mb={2}
+          color={
+            isSuccess ? "success.main" : isError ? "error.main" : "text.primary"
+          }
+        >
           {title}
         </Typography>
+
         <Typography variant="body1" mb={3}>
           {message}
         </Typography>
 
-        {/* Error message */}
-        {error && (
-          <Typography variant="body2" color="error" mb={2}>
-            {error}
-          </Typography>
-        )}
-
         <Box display="flex" justifyContent="center" gap={2}>
-          <Button variant="contained" color="error" onClick={onConfirm}>
+          <Button
+            variant="contained"
+            color={isSuccess ? "success" : isError ? "error" : "primary"}
+            onClick={onConfirm}
+          >
             {confirmText}
           </Button>
           <Button variant="outlined" onClick={onClose}>
