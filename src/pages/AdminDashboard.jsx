@@ -35,7 +35,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
-
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [openSuccessModal, setOpenSuccessModal] = useState(null);
   const fetchFaculty = async () => {
     setLoading(true);
     try {
@@ -101,10 +102,12 @@ const AdminDashboard = () => {
 
   const handleFacultyUpdate = async () => {
     try {
-      await axios.put(
+      const res = await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/users/updateFacultyById/${selectedFaculty.id}`,
         selectedFaculty
       );
+      setSuccessMsg(res.data.message);
+      setOpenSuccessModal(true);
       setOpenEditFacultyModal(false);
       fetchFaculty();
     } catch (error) {
@@ -142,10 +145,12 @@ const AdminDashboard = () => {
 
   const handleProgramUpdate = async () => {
     try {
-      await axios.put(
+      const res = await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/programs/updateProgramById/${selectedProgram.program_id}`,
         selectedProgram
       );
+      setSuccessMsg(res.data.message);
+      setOpenSuccessModal(true);
       setOpenEditProgramModal(false);
       fetchPrograms();
     } catch (error) {
@@ -379,6 +384,19 @@ const AdminDashboard = () => {
         confirmText="Delete"
         cancelText="Cancel"
         error={deleteError}
+      ></InfoModal>
+
+      {/*SuccessModal*/}
+      <InfoModal
+        open={openSuccessModal}
+        onClose={() => setOpenSuccessModal(false)}
+        title="Success!"
+        onConfirm={() => {
+          setOpenSuccessModal(false);
+        }}
+        message={`Updated Successfully`}
+        success={successMsg}
+        type="success"
       ></InfoModal>
 
       {/* Edit Program Modal */}
