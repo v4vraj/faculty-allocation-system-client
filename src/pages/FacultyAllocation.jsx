@@ -18,6 +18,7 @@ import {
   TableBody,
 } from "@mui/material";
 import axios from "axios";
+import InfoModal from "../components/InfoModal";
 
 const FacultyAllocation = () => {
   const [yearList, setYearList] = useState([]);
@@ -30,30 +31,32 @@ const FacultyAllocation = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [allocationList, setAllocationList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [OpenSuccessModal, setOpenSuccessModal] = useState(false);
 
+  const fetchYears = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/programs/getAllYears`
+      );
+      setYearList(res.data);
+    } catch (error) {
+      console.error("Error fetching years:", error);
+    }
+  };
+  const fetchAllAllocation = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/getAllAllocation`
+      );
+      console.log(response.data);
+
+      setAllocationList(response.data);
+    } catch (error) {
+      console.error("Error fetching allocations", error);
+    }
+  };
   useEffect(() => {
-    const fetchYears = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/programs/getAllYears`
-        );
-        setYearList(res.data);
-      } catch (error) {
-        console.error("Error fetching years:", error);
-      }
-    };
-    const fetchAllAllocation = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/users/getAllAllocation`
-        );
-        console.log(response.data);
-
-        setAllocationList(response.data);
-      } catch (error) {
-        console.error("Error fetching allocations", error);
-      }
-    };
     fetchYears();
     fetchAllAllocation();
   }, []);
@@ -97,7 +100,7 @@ const FacultyAllocation = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(
+      const res = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/users/allocateFaculty`,
         {
           year: selectedYear,
@@ -106,7 +109,9 @@ const FacultyAllocation = () => {
           course_id: selectedCourse,
         }
       );
-      alert("Faculty allocated successfully!");
+      setSuccessMsg(res.data.message);
+      setOpenSuccessModal(true);
+      fetchAllAllocation();
     } catch (error) {
       console.error("Error allocating faculty:", error);
     } finally {
@@ -248,6 +253,15 @@ const FacultyAllocation = () => {
           </CardContent>
         </Card>
       </Grid2>
+      <InfoModal
+        open={OpenSuccessModal}
+        onClose={() => setOpenSuccessModal(false)}
+        title="Success!!"
+        onConfirm={() => setOpenSuccessModal(false)}
+        message={`Faculty allocated to the course successfully!`}
+        error={successMsg}
+        type="success"
+      ></InfoModal>
     </Grid2>
   );
 };
