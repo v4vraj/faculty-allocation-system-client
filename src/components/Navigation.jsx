@@ -33,6 +33,13 @@ const NAVIGATION = {
       route: "/admin/bulk-uploads",
       roles: ["Admin"],
     },
+    {
+      segment: "create-faculty",
+      title: "Faculty Creation",
+      icon: <DescriptionIcon />,
+      route: "/admin/create-faculty",
+      roles: ["Admin"],
+    },
   ],
   faculty: [
     {
